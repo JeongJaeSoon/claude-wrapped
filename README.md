@@ -17,15 +17,21 @@ Reads `~/.claude/stats-cache.json` and session history to produce a shareable PN
 **Requires Node.js 18+ and Claude Code usage data (`~/.claude/stats-cache.json`).**
 
 ```bash
-# Clone and run (recommended)
+# Install globally from GitHub (one command)
+npm install -g github:JeongJaeSoon/claude-wrapped
+
+# Run from anywhere
+claude-wrapped
+claude-wrapped --help
+```
+
+Or clone and run locally:
+
+```bash
 git clone https://github.com/JeongJaeSoon/claude-wrapped.git
 cd claude-wrapped
-npm install && npm run build
+npm install
 node dist/index.js
-
-# Or install globally
-npm install && npm run build && npm link
-claude-wrapped
 ```
 
 The generated image is saved to `./claude-wrapped.png` by default.
