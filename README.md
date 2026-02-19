@@ -12,36 +12,23 @@ Reads `~/.claude/stats-cache.json` and session history to produce a shareable PN
 - Fun facts (late-night coding ratio, messages per session, etc.)
 - Most used features (tools, sub-agents, skills)
 
-## Requirements
+## Install & Run
 
-- **Node.js 18+**
-- **Claude Code** installed and used at least once (generates `~/.claude/stats-cache.json`)
-
-## Quick Start
+**Requires Node.js 18+ and Claude Code usage data (`~/.claude/stats-cache.json`).**
 
 ```bash
-# Install dependencies
-npm install
-
-# Build
-npm run build
-
-# Run
+# Clone and run (recommended)
+git clone https://github.com/JeongJaeSoon/claude-wrapped.git
+cd claude-wrapped
+npm install && npm run build
 node dist/index.js
+
+# Or install globally
+npm install && npm run build && npm link
+claude-wrapped
 ```
 
 The generated image is saved to `./claude-wrapped.png` by default.
-
-## Installation (global)
-
-```bash
-# From this directory
-npm link
-
-# Now you can run from anywhere
-claude-wrapped
-claude-wrapped --help
-```
 
 ## Usage
 
