@@ -1,10 +1,4 @@
-import {
-  parseISO,
-  differenceInDays,
-  format,
-  isAfter,
-  isBefore,
-} from 'date-fns';
+import { parseDate, differenceInDays, formatDate } from '../utils/date.js';
 import type {
   StatsCache,
   TeamConfig,
@@ -53,7 +47,7 @@ export function computeWrappedStats(
   const activeDays = filteredActivity.length;
   const totalDays = Math.max(
     1,
-    differenceInDays(parseISO(periodTo), parseISO(periodFrom)) + 1
+    differenceInDays(parseDate(periodTo), parseDate(periodFrom)) + 1
   );
 
   // ─── Tokens & models (filtered via dailyModelTokens) ───
@@ -144,9 +138,9 @@ function filterByDateRange(
   to?: string
 ): DailyActivity[] {
   return activities.filter((d) => {
-    const date = parseISO(d.date);
-    if (from && isBefore(date, parseISO(from))) return false;
-    if (to && isAfter(date, parseISO(to))) return false;
+    const date = parseDate(d.date);
+    if (from && date < parseDate(from)) return false;
+    if (to && date > parseDate(to)) return false;
     return true;
   });
 }
@@ -157,9 +151,9 @@ function filterModelTokensByDateRange(
   to?: string
 ): DailyModelTokens[] {
   return dailyModelTokens.filter((d) => {
-    const date = parseISO(d.date);
-    if (from && isBefore(date, parseISO(from))) return false;
-    if (to && isAfter(date, parseISO(to))) return false;
+    const date = parseDate(d.date);
+    if (from && date < parseDate(from)) return false;
+    if (to && date > parseDate(to)) return false;
     return true;
   });
 }
@@ -169,8 +163,8 @@ function filterTeamsByDateRange(
   from: string,
   to: string
 ): TeamConfig[] {
-  const fromMs = parseISO(from).getTime();
-  const toMs = parseISO(to).getTime() + 86_400_000; // include the end date
+  const fromMs = parseDate(from).getTime();
+  const toMs = parseDate(to).getTime() + 86_400_000; // include the end date
   return teams.filter((t) => t.createdAt >= fromMs && t.createdAt <= toMs);
 }
 
@@ -227,8 +221,8 @@ function computeStreaks(sortedDates: string[]): {
   let streak = 1;
 
   for (let i = 1; i < sortedDates.length; i++) {
-    const prev = parseISO(sortedDates[i - 1]);
-    const curr = parseISO(sortedDates[i]);
+    const prev = parseDate(sortedDates[i - 1]);
+    const curr = parseDate(sortedDates[i]);
     if (differenceInDays(curr, prev) === 1) {
       streak++;
       longestStreak = Math.max(longestStreak, streak);
@@ -239,8 +233,8 @@ function computeStreaks(sortedDates: string[]): {
 
   let currentStreak = 1;
   for (let i = sortedDates.length - 1; i > 0; i--) {
-    const curr = parseISO(sortedDates[i]);
-    const prev = parseISO(sortedDates[i - 1]);
+    const curr = parseDate(sortedDates[i]);
+    const prev = parseDate(sortedDates[i - 1]);
     if (differenceInDays(curr, prev) === 1) {
       currentStreak++;
     } else {
@@ -272,8 +266,8 @@ function computeIntensity(count: number, max: number): number {
 }
 
 function buildPeriodLabel(from: string, to: string): string {
-  const fromLabel = format(parseISO(from), 'MMM yyyy');
-  const toLabel = format(parseISO(to), 'MMM yyyy');
+  const fromLabel = formatDate(parseDate(from), 'MMM yyyy');
+  const toLabel = formatDate(parseDate(to), 'MMM yyyy');
   return fromLabel === toLabel ? fromLabel : `${fromLabel} \u2014 ${toLabel}`;
 }
 
