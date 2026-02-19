@@ -1,6 +1,6 @@
 import os from 'node:os';
 import { Command } from 'commander';
-import { parseISO, differenceInDays, format } from 'date-fns';
+import { parseDate, differenceInDays, formatDate } from './utils/date.js';
 import pc from 'picocolors';
 export function run() {
     const program = new Command();
@@ -51,7 +51,7 @@ ${pc.bold('Data source:')}
 }
 // ─── Date validation ───
 function validateAndResolveDates(rawFrom, rawTo) {
-    const today = format(new Date(), 'yyyy-MM-dd');
+    const today = formatDate(new Date(), 'yyyy-MM-dd');
     const from = rawFrom ? validateDate(rawFrom, '--from') : undefined;
     const to = rawTo ? validateDate(rawTo, '--to') : undefined;
     if (!from && !to)
@@ -62,14 +62,14 @@ function validateAndResolveDates(rawFrom, rawTo) {
         resolvedTo = today;
     }
     else if (!resolvedFrom && resolvedTo) {
-        const autoFrom = new Date(parseISO(resolvedTo));
+        const autoFrom = new Date(parseDate(resolvedTo));
         autoFrom.setDate(autoFrom.getDate() - 365);
-        resolvedFrom = format(autoFrom, 'yyyy-MM-dd');
+        resolvedFrom = formatDate(autoFrom, 'yyyy-MM-dd');
     }
     if (resolvedFrom > resolvedTo) {
         exitWithError(`--from (${resolvedFrom}) is after --to (${resolvedTo})`, 'Swap the two dates or remove one to auto-fill.');
     }
-    const span = differenceInDays(parseISO(resolvedTo), parseISO(resolvedFrom));
+    const span = differenceInDays(parseDate(resolvedTo), parseDate(resolvedFrom));
     if (span > 365) {
         exitWithError(`Range spans ${span} days`, 'Maximum is 365 days. Narrow the range.');
     }
@@ -79,11 +79,11 @@ function validateDate(value, flag) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
         exitWithError(`${flag} "${value}" is not in YYYY-MM-DD format`, `Example: ${pc.cyan(`${flag} 2026-01-15`)}`);
     }
-    const parsed = parseISO(value);
+    const parsed = parseDate(value);
     if (isNaN(parsed.getTime())) {
         exitWithError(`${flag} "${value}" is not a valid date`);
     }
-    const roundTrip = format(parsed, 'yyyy-MM-dd');
+    const roundTrip = formatDate(parsed, 'yyyy-MM-dd');
     if (roundTrip !== value) {
         exitWithError(`${flag} "${value}" is not a real calendar date`, `Did you mean ${pc.cyan(roundTrip)}?`);
     }

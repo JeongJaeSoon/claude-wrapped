@@ -32,7 +32,6 @@
   "dependencies": {
     "@napi-rs/canvas": "^0.1.68",
     "commander": "^14.0.0",
-    "date-fns": "^4.1.0",
     "picocolors": "^1.1.1"
   },
   "devDependencies": {

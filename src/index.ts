@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import pc from 'picocolors';
-import { format } from 'date-fns';
+import { formatDate } from './utils/date.js';
 
 import { run } from './cli.js';
 import { loadStatsCache, loadTeamConfigs, loadFeatureUsage } from './data/parser.js';
@@ -52,7 +52,7 @@ async function main(): Promise<void> {
   console.log(pc.dim(`  ${'─'.repeat(40)}`));
 
   const fmt = options.compact ? formatCompact : formatNumber;
-  const peakDateLabel = format(new Date(stats.peakDay.date), 'MMM d');
+  const peakDateLabel = formatDate(new Date(stats.peakDay.date), 'MMM d');
   const topModelName = stats.topModels[0]?.displayName ?? 'N/A';
 
   const rows: Array<[string, string]> = [

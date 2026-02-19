@@ -1,6 +1,6 @@
 import os from 'node:os';
 import { Command } from 'commander';
-import { parseISO, differenceInDays, format } from 'date-fns';
+import { parseDate, differenceInDays, formatDate } from './utils/date.js';
 import pc from 'picocolors';
 import type { CLIOptions } from './types.js';
 
@@ -66,7 +66,7 @@ function validateAndResolveDates(
   rawFrom?: string,
   rawTo?: string,
 ): { from?: string; to?: string } {
-  const today = format(new Date(), 'yyyy-MM-dd');
+  const today = formatDate(new Date(), 'yyyy-MM-dd');
 
   const from = rawFrom ? validateDate(rawFrom, '--from') : undefined;
   const to = rawTo ? validateDate(rawTo, '--to') : undefined;
@@ -79,9 +79,9 @@ function validateAndResolveDates(
   if (resolvedFrom && !resolvedTo) {
     resolvedTo = today;
   } else if (!resolvedFrom && resolvedTo) {
-    const autoFrom = new Date(parseISO(resolvedTo));
+    const autoFrom = new Date(parseDate(resolvedTo));
     autoFrom.setDate(autoFrom.getDate() - 365);
-    resolvedFrom = format(autoFrom, 'yyyy-MM-dd');
+    resolvedFrom = formatDate(autoFrom, 'yyyy-MM-dd');
   }
 
   if (resolvedFrom! > resolvedTo!) {
@@ -91,7 +91,7 @@ function validateAndResolveDates(
     );
   }
 
-  const span = differenceInDays(parseISO(resolvedTo!), parseISO(resolvedFrom!));
+  const span = differenceInDays(parseDate(resolvedTo!), parseDate(resolvedFrom!));
   if (span > 365) {
     exitWithError(
       `Range spans ${span} days`,
@@ -110,12 +110,12 @@ function validateDate(value: string, flag: string): string {
     );
   }
 
-  const parsed = parseISO(value);
+  const parsed = parseDate(value);
   if (isNaN(parsed.getTime())) {
     exitWithError(`${flag} "${value}" is not a valid date`);
   }
 
-  const roundTrip = format(parsed, 'yyyy-MM-dd');
+  const roundTrip = formatDate(parsed, 'yyyy-MM-dd');
   if (roundTrip !== value) {
     exitWithError(
       `${flag} "${value}" is not a real calendar date`,
