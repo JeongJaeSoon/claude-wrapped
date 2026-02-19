@@ -1,0 +1,42 @@
+{
+  "name": "claude-wrapped",
+  "version": "0.1.0",
+  "description": "Generate beautiful Wrapped-style summaries of your Claude Code usage",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "wrapped",
+    "usage",
+    "stats",
+    "cli"
+  ],
+  "bin": {
+    "claude-wrapped": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.68",
+    "commander": "^14.0.0",
+    "date-fns": "^4.1.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}
